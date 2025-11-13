@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Attractiveness Self-Assessment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f5;
+      color: #111827;
+    }
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 16px 80px;
+    }
+    h1, h2, h3 {
+      margin: 0 0 8px;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+    h2 {
+      font-size: 1.3rem;
+      margin-top: 24px;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 4px;
+    }
+    h3 {
+      font-size: 1rem;
+      margin-top: 16px;
+    }
+    p.description {
+      margin: 0 0 12px;
+      color: #4b5563;
+      font-size: 0.95rem;
+    }
+    .section {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 16px 16px 8px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .question {
+      margin-bottom: 12px;
+      padding: 8px 8px 4px;
+      border-radius: 6px;
+    }
+    .question label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+    .scale {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 12px;
+      font-size: 0.85rem;
+      align-items: center;
+    }
+    .scale-option {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+    .scale-option input {
+      cursor: pointer;
+    }
+    .controls {
+      position: sticky;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(244, 244, 245, 0.98);
+      border-top: 1px solid #e5e7eb;
+      padding: 12px 16px;
+      display: none; /* hidden until gender selected */
+      justify-content: center;
+      z-index: 10;
+    }
+    .controls-inner {
+      max-width: 960px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+    button {
+      border: none;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: #2563eb;
+      color: white;
+      box-shadow: 0 1px 2px rgba(15,23,42,0.25);
+      white-space: nowrap;
+    }
+    button.secondary {
+      background: #e5e7eb;
+      color: #111827;
+      box-shadow: none;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
+    }
+    #results {
+      margin-top: 24px;
+    }
+    #results h2 {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 8px;
+    }
+    .results-summary {
+      font-size: 0.9rem;
+      color: #4b5563;
+      margin-bottom: 8px;
+    }
+    .area-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .area-item {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      border-left: 4px solid #f97316;
+      font-size: 0.9rem;
+    }
+    .area-item strong {
+      display: block;
+      margin-bottom: 2px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      background: #f3f4f6;
+      color: #4b5563;
+      margin-left: 6px;
+    }
+    .section-score {
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+    .missing-warning {
+      color: #b91c1c;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+    }
+    .section-header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .section-average {
+      font-size: 0.8rem;
+      color: #6b7280;
+      white-space: nowrap;
+    }
+    .coaching-tip {
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px dashed #e5e7eb;
+      font-size: 0.85rem;
+      color: #374151;
+    }
+    .coaching-tip-label {
+      font-weight: 600;
+      margin-right: 4px;
+    }
+    .weight-info {
+      font-size: 0.78rem;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+    /* Gender selector */
+    .gender-selector {
+      margin-bottom: 24px;
+      padding: 24px 16px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      text-align: center;
+    }
+    .gender-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .gender-button {
+      min-width: 140px;
+      padding: 16px 24px;
+      font-size: 1.05rem;
+      border-radius: 999px;
+    }
+    .gender-button.secondary {
+      background: #f97316;
+      color: #ffffff;
+    }
+    @media (max-width: 640px) {
+      .controls-inner {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .controls-inner button {
+        width: 100%;
+        justify-content: center;
+      }
+      .section-header-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div id="genderSelector" class="gender-selector">
+      <h1>Attractiveness Self-Assessment</h1>
+      <p class="description">
+        Choose your questionnaire to begin. You’ll rate statements from 1–5 and see your top 5 areas to improve, weighted by importance.
+      </p>
+      <div class="gender-buttons">
+        <button type="button" class="gender-button" onclick="selectGender('man')">Man</button>
+        <button type="button" class="gender-button secondary" onclick="selectGender('woman')">Woman</button>
+      </div>
+    </div>
+
+    <h1 id="mainTitle" style="display:none;"></h1>
+    <p id="mainDescription" class="description" style="display:none;"></p>
+
+    <div id="questionnaire" style="display:none;"></div>
+
+    <div id="results" style="display:none;"></div>
+  </div>
+
+
+  <script>
+    // ------------------------------------------
+    // CONFIG: per-gender metadata + sections
+    // Each question has:
+    //  - weight: importance multiplier (1–3 recommended)
+    //  - tip: coaching suggestion for improvement
+    // ------------------------------------------
+    const questionnaires = {
+      man: {
+        title: 'Male Attractiveness Self-Assessment',
+        description:
+          'Rate each statement from 1 (strongly disagree / not true at all) to 5 (strongly agree / very true). At the end you’ll see your top 5 areas to improve, weighted by importance.',
+        sections: [
+          {
+            id: 'physical_presence',
+            title: '1. Physical Presence',
+            description: 'How you show up physically, day to day.',
+            questions: [
+              {
+                id: 'hygiene_consistent',
+                text: 'I maintain consistent hygiene routines.',
+                weight: 3,
+                tip: 'Set a fixed morning and evening hygiene routine (shower, teeth, skin, grooming) and follow it every single day for 30 days.'
+              },
+              {
+                id: 'hygiene_grooming',
+                text: 'My hair, beard, and nails are kept clean and intentional.',
+                weight: 2,
+                tip: 'Book a recurring haircut schedule and pick a beard/nail routine once a week so grooming is automatic, not random.'
+              },
+              {
+                id: 'hygiene_scent',
+                text: 'My breath and scent are reliably pleasant.',
+                weight: 3,
+                tip: 'Dial in daily flossing, tongue scraping, and a neutral deodorant; keep gum or mints on you when meeting people.'
+              },
+              {
+                id: 'fitness_exercise',
+                text: 'I exercise at least 3 times per week.',
+                weight: 3,
+                tip: 'Pick one simple program (walk + basic strength) and anchor it to fixed days so you don’t negotiate with yourself each time.'
+              },
+              {
+                id: 'fitness_vitality',
+                text: 'I have visible physical vitality (energy, posture, muscle tone).',
+                weight: 3,
+                tip: 'Combine sleep, resistance training, and posture work (e.g. wall slides, chin tucks) to look and feel more switched on.'
+              },
+              {
+                id: 'fitness_discipline',
+                text: 'My weight and health reflect discipline, not neglect.',
+                weight: 3,
+                tip: 'Track what you eat for two weeks and cut the biggest recurring junk pattern (late snacks, liquid calories, etc.).'
+              },
+              {
+                id: 'style_fit',
+                text: 'My clothing fits well and suits my environment.',
+                weight: 2,
+                tip: 'Upgrade fit first: try clothes one size up/down if needed and prioritize pieces that follow your body lines without clinging.'
+              },
+              {
+                id: 'style_essentials',
+                text: 'I have basic wardrobe essentials for casual and formal settings.',
+                weight: 2,
+                tip: 'Build a small capsule: good jeans, neutral tees, one solid button-up, clean sneakers, and one smart pair of shoes.'
+              },
+              {
+                id: 'style_maturity',
+                text: 'My overall look communicates competence and maturity.',
+                weight: 2,
+                tip: 'Retire worn-out or “boyish” pieces and replace them slowly with cleaner, more structured basics.'
+              }
+            ]
+          },
+          {
+            id: 'emotional_stability',
+            title: '2. Emotional Stability & Inner Strength',
+            description: 'How steady and centred you are internally.',
+            questions: [
+              {
+                id: 'control_stress',
+                text: 'I manage stress, anger, and frustration calmly.',
+                weight: 3,
+                tip: 'Practice a simple pause: 3 slow breaths before responding in any tense situation; train it daily.'
+              },
+              {
+                id: 'control_impulse',
+                text: 'I avoid impulsive behaviour (financial, sexual, emotional).',
+                weight: 3,
+                tip: 'Create 24-hour rules for big decisions: no acting on intense impulses until you’ve slept once on them.'
+              },
+              {
+                id: 'confidence_eye_contact',
+                text: 'I can hold eye contact comfortably.',
+                weight: 2,
+                tip: 'Practice with low-stakes people (barista, cashier, co-worker) and hold eye contact just a moment longer than usual.'
+              },
+              {
+                id: 'confidence_speaking',
+                text: 'I speak clearly without rambling.',
+                weight: 2,
+                tip: 'Before talking, silently decide your main point in one sentence; then speak that sentence first.'
+              },
+              {
+                id: 'confidence_disagree',
+                text: 'I can disagree respectfully without anxiety.',
+                weight: 2,
+                tip: 'Use a simple frame: “I see it differently. From my side…”, and keep your tone slow and calm.'
+              },
+              {
+                id: 'purpose_goals',
+                text: 'I have clear personal goals and direction.',
+                weight: 3,
+                tip: 'Write 3 goals only (health, money, relationships) and one next concrete action for each this week.'
+              },
+              {
+                id: 'purpose_mission',
+                text: 'Most days, I get up with a sense of mission.',
+                weight: 3,
+                tip: 'Tie your daily tasks to something larger (service, family, faith, legacy) and remind yourself each morning in one sentence.'
+              }
+            ]
+          },
+          {
+            id: 'social_intelligence',
+            title: '3. Social Intelligence',
+            description: 'How you interact with and understand other people.',
+            questions: [
+              {
+                id: 'conversation_questions',
+                text: 'I ask thoughtful questions and genuinely listen.',
+                weight: 3,
+                tip: 'Use the “three deep” rule: ask at least three follow-up questions about what the other person just said.'
+              },
+              {
+                id: 'conversation_interrupting',
+                text: 'I rarely interrupt, monologue, or overshare.',
+                weight: 2,
+                tip: 'Count to one in your head after someone finishes before you reply; let silences exist without filling them.'
+              },
+              {
+                id: 'presence_enjoyable',
+                text: 'People generally enjoy being around me.',
+                weight: 3,
+                tip: 'Bring one simple positive thing to every interaction: a sincere compliment, a joke, or clear appreciation.'
+              },
+              {
+                id: 'presence_groups',
+                text: 'I can navigate group dynamics confidently.',
+                weight: 2,
+                tip: 'Focus on one or two people at a time in groups instead of performing for everyone at once.'
+              },
+              {
+                id: 'boundaries_time',
+                text: 'I protect my time and energy without guilt.',
+                weight: 3,
+                tip: 'Practice saying “I can’t this time, but thanks for asking” without giving long explanations.'
+              },
+              {
+                id: 'boundaries_expectations',
+                text: 'I can set expectations without being defensive.',
+                weight: 3,
+                tip: 'Use calm, neutral language: “Here’s what I can do; here’s what I can’t,” and then stop talking.'
+              }
+            ]
+          },
+          {
+            id: 'masculine_competence',
+            title: '4. Masculine Competence',
+            description: 'Capability, leadership, and reliability.',
+            questions: [
+              {
+                id: 'capability_tasks',
+                text: 'I can handle basic practical tasks (repairs, planning, logistics).',
+                weight: 3,
+                tip: 'Pick one weakness (e.g. basic home maintenance, trip planning) and intentionally learn just that for a month.'
+              },
+              {
+                id: 'capability_composure',
+                text: 'I remain composed in unexpected or tense situations.',
+                weight: 3,
+                tip: 'Focus on “what is the next right step?” instead of “why is this happening?” in stressful moments.'
+              },
+              {
+                id: 'leadership_responsibility',
+                text: 'I naturally step into responsibility when it is needed.',
+                weight: 3,
+                tip: 'When something is unclear, volunteer to own one piece: “I’ll handle X and report back.”'
+              },
+              {
+                id: 'leadership_decisions',
+                text: 'I can make decisions without excessive hesitation.',
+                weight: 3,
+                tip: 'Give yourself a decision deadline and act; treat imperfect action as better than endless analysis.'
+              },
+              {
+                id: 'reliability_follow_through',
+                text: 'I do what I say I will do.',
+                weight: 3,
+                tip: 'Say yes to fewer things and track commitments in one place; never rely on memory alone.'
+              },
+              {
+                id: 'reliability_crisis',
+                text: 'I stay steady and grounded in crises or chaos.',
+                weight: 3,
+                tip: 'In any crisis, slow your breathing and speak more slowly; others take emotional cues from your pace.'
+              }
+            ]
+          },
+          {
+            id: 'romantic_behaviour',
+            title: '5. Romantic Behaviour',
+            description: 'How you show up in romantic and sexual contexts.',
+            questions: [
+              {
+                id: 'intentions_clarity',
+                text: 'I communicate my romantic intentions clearly (short- or long-term).',
+                weight: 3,
+                tip: 'State your intentions early in simple language: “I’m dating to find something long term,” or “I’m keeping things casual.”'
+              },
+              {
+                id: 'intentions_consistency',
+                text: 'My words and actions stay consistent over time.',
+                weight: 3,
+                tip: 'If you wouldn’t back it with action next week, don’t say it today; let actions lead and words follow.'
+              },
+              {
+                id: 'polarity_warmth',
+                text: 'I show warmth and affection without being needy.',
+                weight: 3,
+                tip: 'Give affection but keep your centre: maintain your routines and priorities whether she is responsive or not.'
+              },
+              {
+                id: 'polarity_masculinity',
+                text: 'I maintain masculine polarity without being domineering.',
+                weight: 2,
+                tip: 'Lead with invitations, not commands: “Let’s do X” while still being open to her input.'
+              },
+              {
+                id: 'sexual_cues',
+                text: 'I pay attention to and respect female cues and pacing.',
+                weight: 3,
+                tip: 'When in doubt, slow down and ask; enthusiasm and comfort should be obvious, not guessed.'
+              },
+              {
+                id: 'sexual_confidence',
+                text: 'I show sexual confidence without rushing or pressuring.',
+                weight: 3,
+                tip: 'Stay relaxed with pauses; be comfortable backing off without sulking if the pace slows.'
+              }
+            ]
+          },
+          {
+            id: 'lifestyle_stability',
+            title: '6. Lifestyle & Stability',
+            description: 'Work, home life, and long-term stability.',
+            questions: [
+              {
+                id: 'career_stability',
+                text: 'I have reasonably stable work or income.',
+                weight: 3,
+                tip: 'If unstable, set a 90-day plan to secure more consistent income, even if it’s a temporary but solid role.'
+              },
+              {
+                id: 'career_growth',
+                text: 'I am actively growing my skills and career.',
+                weight: 3,
+                tip: 'Block weekly time for career development (courses, projects, networking) and guard it like an appointment.'
+              },
+              {
+                id: 'career_financial',
+                text: 'Overall, I am financially improving year over year.',
+                weight: 3,
+                tip: 'Track your net worth quarterly; aim for a small but steady upward trend with clear saving and debt rules.'
+              },
+              {
+                id: 'home_clean',
+                text: 'My living space is clean, organized, and peaceful.',
+                weight: 2,
+                tip: 'Do a 10–15 minute tidy every day; focus on surfaces and floors first to change how the space feels.'
+              },
+              {
+                id: 'home_hosting',
+                text: 'I could host someone at home without embarrassment.',
+                weight: 2,
+                tip: 'Create a “guest-ready” checklist: clear clutter, wipe bathroom surfaces, empty trash, open a window.'
+              },
+              {
+                id: 'future_plans',
+                text: 'I have savings, plans, or infrastructure for long-term partnership.',
+                weight: 3,
+                tip: 'Define what “ready for a family/serious partnership” means to you and start building one piece at a time.'
+              }
+            ]
+          },
+          {
+            id: 'moral_spiritual',
+            title: '7. Moral & Spiritual Character',
+            description: 'Your integrity, values, and depth.',
+            questions: [
+              {
+                id: 'virtue_integrity',
+                text: 'I act with integrity even when no one is watching.',
+                weight: 3,
+                tip: 'Notice where your actions change when unseen; tighten those areas first as a matter of honour.'
+              },
+              {
+                id: 'virtue_vices',
+                text: 'I avoid vices that weaken my mind or character.',
+                weight: 3,
+                tip: 'Pick one vice to reduce or fast from for 30 days and replace it with a strengthening habit.'
+              },
+              {
+                id: 'values_clarity',
+                text: 'I know my core values and can state them clearly.',
+                weight: 2,
+                tip: 'Write a short list of 3–5 values and one behaviour that proves each one in real life.'
+              },
+              {
+                id: 'values_disciplined',
+                text: 'My daily habits reflect discipline and self-governance.',
+                weight: 3,
+                tip: 'Bring one habit under strict discipline (sleep, phone use, food, prayer, etc.) and build from there.'
+              },
+              {
+                id: 'depth_meaning',
+                text: 'I pursue meaning and purpose, not just comfort and pleasure.',
+                weight: 3,
+                tip: 'Increase time spent on service, learning, and worship; decrease time spent on numbing entertainment.'
+              }
+            ]
+          },
+          {
+            id: 'relationship_readiness',
+            title: '8. Relationship Readiness',
+            description: 'How ready you are for healthy long-term relationships.',
+            questions: [
+              {
+                id: 'attachment_self_regulation',
+                text: 'I regulate my emotions without dumping them on a partner.',
+                weight: 3,
+                tip: 'Use friends, journaling, prayer, or coaching to process intense emotions before bringing them to her.'
+              },
+              {
+                id: 'attachment_conflict',
+                text: 'In conflict, I neither withdraw completely nor chase desperately.',
+                weight: 3,
+                tip: 'If triggered, say “I need a short break, but I will come back to this,” and then actually return.'
+              },
+              {
+                id: 'communication_needs',
+                text: 'I can express my needs directly without resentment.',
+                weight: 3,
+                tip: 'Use: “I feel X when Y happens; I need Z instead.” Practice this structure until it feels natural.'
+              },
+              {
+                id: 'communication_grounded',
+                text: 'I stay grounded and respectful during disagreements.',
+                weight: 3,
+                tip: 'Lower your voice instead of raising it, and focus on solving the problem, not winning the argument.'
+              },
+              {
+                id: 'traits_protective',
+                text: 'I am protective without being controlling.',
+                weight: 3,
+                tip: 'Offer protection as an option: “I’d like to keep you safe; what feels good to you here?” rather than imposing rules.'
+              },
+              {
+                id: 'traits_loyal',
+                text: 'I am loyal in both thought and action.',
+                weight: 3,
+                tip: 'Cut off behaviours that quietly undermine loyalty (secret flirting, fantasy, emotional affairs).'
+              }
+            ]
+          },
+          {
+            id: 'social_proof',
+            title: '9. Social Proof',
+            description: 'Friendships, community, and reputation.',
+            questions: [
+              {
+                id: 'friends_male',
+                text: 'I maintain at least a few strong, trustworthy male friendships.',
+                weight: 3,
+                tip: 'Invest in two or three men you respect; reach out weekly and do real things together, not just chat.'
+              },
+              {
+                id: 'community_value',
+                text: 'I actively contribute value to some community or group.',
+                weight: 2,
+                tip: 'Find one community that matters to you and volunteer or serve in a small, consistent way.'
+              },
+              {
+                id: 'reputation_trust',
+                text: 'People who know me see me as competent and trustworthy.',
+                weight: 3,
+                tip: 'Be early, prepared, and calm; those three behaviours alone quickly change how people see you.'
+              }
+            ]
+          },
+          {
+            id: 'sexual_market',
+            title: '10. Reality Check: Romantic Demand & Self-Image',
+            description: 'How the world responds to you and how you see yourself.',
+            questions: [
+              {
+                id: 'demand_responsiveness',
+                text: 'Women I find attractive often respond positively to me.',
+                weight: 3,
+                tip: 'Sharpen your fundamentals (appearance, warmth, direction) and increase your reps: more social exposure with quality women.'
+              },
+              {
+                id: 'demand_options',
+                text: 'I have romantic options, but I am selective.',
+                weight: 2,
+                tip: 'Expand circles (hobbies, community, events) so you have options, then hold standards instead of clinging to scarcity.'
+              },
+              {
+                id: 'self_image_deserving',
+                text: 'I believe I am desirable and worthy of deep love.',
+                weight: 3,
+                tip: 'Stop rehearsing your failures; rehearse your strengths and growth. Speak about yourself the way you would to a brother you respect.'
+              }
+            ]
+          }
+        ]
+      },
+
+      woman: {
+        title: 'Female Attractiveness Self-Assessment',
+        description:
+          'Rate each statement from 1 (strongly disagree / not true at all) to 5 (strongly agree / very true). At the end you’ll see your top 5 areas to improve, weighted by importance.',
+        sections: [
+          {
+            id: 'feminine_presence',
+            title: '1. Feminine Presence & Beauty',
+            description: 'How you present yourself physically and energetically.',
+            questions: [
+              {
+                id: 'hygiene_consistent',
+                text: 'I maintain consistent hygiene and skin-care routines.',
+                weight: 3,
+                tip: 'Create a simple morning/evening routine for hygiene and skin-care and treat it as non-negotiable.'
+              },
+              {
+                id: 'grooming_hair',
+                text: 'My hair and nails are clean and intentionally maintained.',
+                weight: 2,
+                tip: 'Book recurring appointments or set weekly “beauty maintenance” time so grooming stays effortless.'
+              },
+              {
+                id: 'scent_presence',
+                text: 'My scent, posture, and body language feel inviting and feminine.',
+                weight: 3,
+                tip: 'Experiment with a subtle signature scent and practice standing tall with relaxed shoulders and open body language.'
+              },
+              {
+                id: 'style_flattering',
+                text: 'My clothing fits well, flatters my shape, and feels feminine.',
+                weight: 3,
+                tip: 'Focus on silhouettes that highlight your best features and choose fabrics that move well with your body.'
+              },
+              {
+                id: 'modesty_elegance',
+                text: 'My style balances attractiveness with modesty and elegance.',
+                weight: 3,
+                tip: 'Aim for outfits that you’d feel comfortable wearing around both a good man and his family.'
+              }
+            ]
+          },
+          {
+            id: 'emotional_warmth',
+            title: '2. Emotional Warmth & Stability',
+            description: 'Your emotional tone and stability day to day.',
+            questions: [
+              {
+                id: 'warmth_kindness',
+                text: 'People experience me as warm, kind, and approachable.',
+                weight: 3,
+                tip: 'Offer small, genuine warmth in daily interactions: soft eye contact, a smile, and sincere thank-yous.'
+              },
+              {
+                id: 'emotional_regulation',
+                text: 'I can feel strong emotions without becoming chaotic or hurtful.',
+                weight: 3,
+                tip: 'When emotions spike, take a pause to breathe or journal before reacting so you can respond, not explode.'
+              },
+              {
+                id: 'forgiveness',
+                text: 'I do not hold grudges or rehearse old hurts for long.',
+                weight: 3,
+                tip: 'When wronged, decide consciously whether to address it, forgive it, or walk away—instead of replaying it endlessly.'
+              },
+              {
+                id: 'gratitude',
+                text: 'I frequently notice and express gratitude to others.',
+                weight: 2,
+                tip: 'Each day, tell at least one person specifically what you appreciate about them.'
+              },
+              {
+                id: 'drama_avoidance',
+                text: 'I avoid gossip and unnecessary drama.',
+                weight: 3,
+                tip: 'Step out of conversations that revolve around tearing people down; redirect to solutions or positive topics.'
+              }
+            ]
+          },
+          {
+            id: 'social_grace',
+            title: '3. Social Grace & Communication',
+            description: 'How you relate and communicate with others.',
+            questions: [
+              {
+                id: 'conversation_listening',
+                text: 'I listen attentively and don’t dominate conversations.',
+                weight: 3,
+                tip: 'Ask follow-up questions and aim for a balance where the other person speaks at least as much as you.'
+              },
+              {
+                id: 'kind_speech',
+                text: 'My words are generally kind, respectful, and uplifting.',
+                weight: 3,
+                tip: 'Avoid sarcasm and subtle jabs; choose words that build others up, especially your close relationships.'
+              },
+              {
+                id: 'conflict_soft',
+                text: 'In conflict, I can express myself without shouting, contempt, or stonewalling.',
+                weight: 3,
+                tip: 'Use phrases like “I feel…” and “I would appreciate…” rather than accusations or labels.'
+              },
+              {
+                id: 'boundaries_gracious',
+                text: 'I set boundaries without being harsh or passive-aggressive.',
+                weight: 3,
+                tip: 'Practice saying no kindly and directly: “That doesn’t work for me, but thank you for thinking of me.”'
+              },
+              {
+                id: 'hospitality',
+                text: 'I know how to make guests feel welcome and comfortable.',
+                weight: 2,
+                tip: 'Offer small touches: a drink, a comfortable seat, and genuine interest in how your guest is doing.'
+              }
+            ]
+          },
+          {
+            id: 'support_partnership',
+            title: '4. Supportiveness & Partnership',
+            description: 'How you relate to a man’s leadership, mission, and responsibilities.',
+            questions: [
+              {
+                id: 'respect_for_men',
+                text: 'I speak respectfully about men, especially the one I’m with or hope to be with.',
+                weight: 3,
+                tip: 'Notice jokes or stories that belittle men and choose language that honours what is good instead.'
+              },
+              {
+                id: 'support_mission',
+                text: 'I want to understand and support a man’s mission, not compete with it.',
+                weight: 3,
+                tip: 'Ask about his goals and look for ways to encourage, practically support, or pray for them.'
+              },
+              {
+                id: 'receptivity',
+                text: 'I can receive help, care, and leadership without resentment.',
+                weight: 3,
+                tip: 'When someone offers help, practice saying “Thank you, I appreciate that” instead of reflexively declining.'
+              },
+              {
+                id: 'encouragement',
+                text: 'I consciously encourage the men in my life when they do something good or difficult.',
+                weight: 2,
+                tip: 'Point out specific things you admire: effort, sacrifice, courage, or consistency.'
+              },
+              {
+                id: 'nagging_control',
+                text: 'I avoid nagging, controlling, or trying to micromanage everything.',
+                weight: 3,
+                tip: 'Express what you need clearly once or twice, then allow space for follow-through instead of constant reminders.'
+              }
+            ]
+          },
+          {
+            id: 'lifestyle_home',
+            title: '5. Lifestyle, Health & Home',
+            description: 'Your habits in health, finances, and homemaking.',
+            questions: [
+              {
+                id: 'health_stewardship',
+                text: 'I steward my body well with sleep, nutrition, and movement.',
+                weight: 3,
+                tip: 'Choose one health pillar (sleep, food, or movement) and improve it consistently for the next month.'
+              },
+              {
+                id: 'financial_stability',
+                text: 'I handle my money with basic wisdom and self-control.',
+                weight: 3,
+                tip: 'Track your spending for a month and create a simple budget that includes giving and saving.'
+              },
+              {
+                id: 'home_order',
+                text: 'My living space is generally clean, ordered, and peaceful.',
+                weight: 3,
+                tip: 'Do a short daily reset: clear surfaces, tidy clutter, and keep one room as a calm, beautiful space.'
+              },
+              {
+                id: 'homemaking_skills',
+                text: 'I’m developing homemaking skills (cooking, cleaning, organizing, hosting).',
+                weight: 2,
+                tip: 'Choose one skill (like a few staple recipes) and practice until it becomes easy and reliable.'
+              },
+              {
+                id: 'time_management',
+                text: 'I manage my time so that I’m not constantly rushed or chaotic.',
+                weight: 2,
+                tip: 'Plan your day the night before, with margin for rest and interruptions.'
+              }
+            ]
+          },
+          {
+            id: 'moral_spiritual_f',
+            title: '6. Moral & Spiritual Character',
+            description: 'Your inner compass, virtues, and spiritual depth.',
+            questions: [
+              {
+                id: 'integrity_private',
+                text: 'My private life matches the values I claim publicly.',
+                weight: 3,
+                tip: 'Identify one area where you feel “double” and bring it back into alignment with your values.'
+              },
+              {
+                id: 'virtue_purity',
+                text: 'I guard my mind, body, and heart from things that cheapen intimacy.',
+                weight: 3,
+                tip: 'Reduce exposure to media, habits, or relationships that cheapen love or objectify others.'
+              },
+              {
+                id: 'faith_practice',
+                text: 'My spiritual life is active (prayer, reflection, worship, or similar).',
+                weight: 2,
+                tip: 'Create a small daily ritual for spiritual focus—morning or evening—anchored to something you already do.'
+              },
+              {
+                id: 'teachability',
+                text: 'I am humble and open to correction from wise people.',
+                weight: 3,
+                tip: 'Ask one trusted person where they see your greatest growth opportunity—and really listen.'
+              },
+              {
+                id: 'service_heart',
+                text: 'I look for ways to serve others, not just to be served.',
+                weight: 3,
+                tip: 'Each week, choose at least one concrete act of service for someone who cannot repay you.'
+              }
+            ]
+          },
+          {
+            id: 'relationship_readiness_f',
+            title: '7. Relationship Readiness & Respect',
+            description: 'How ready you are to build and sustain a healthy relationship.',
+            questions: [
+              {
+                id: 'communication_needs_f',
+                text: 'I can express my needs and feelings clearly without attacking.',
+                weight: 3,
+                tip: 'Use “I feel… when… I need…” instead of “You always/never…” statements.'
+              },
+              {
+                id: 'attachment_patterns_f',
+                text: 'I don’t chase or cling when I feel insecure.',
+                weight: 3,
+                tip: 'When anxious, pause and self-regulate (breathe, pray, journal) before reaching out for reassurance.'
+              },
+              {
+                id: 'respect_disagreement',
+                text: 'I can disagree with a man while still showing respect.',
+                weight: 3,
+                tip: 'Focus on the issue, not his identity; avoid eye-rolling, contempt, or public criticism.'
+              },
+              {
+                id: 'loyalty',
+                text: 'I am loyal in how I speak about my partner when he isn’t present.',
+                weight: 3,
+                tip: 'Do not vent about him to people who will just take your side; choose wise, discreet counsel instead.'
+              },
+              {
+                id: 'marriage_mindset',
+                text: 'I think about relationships in terms of long-term covenant, not just feelings.',
+                weight: 3,
+                tip: 'Clarify your vision of marriage and family so dating aligns with it instead of being purely emotional.'
+              }
+            ]
+          },
+          {
+            id: 'social_proof_f',
+            title: '8. Social Proof & Community',
+            description: 'Your friendships, community ties, and reputation.',
+            questions: [
+              {
+                id: 'female_friendships',
+                text: 'I have at least a few healthy, loyal female friendships.',
+                weight: 3,
+                tip: 'Invest intentionally in two or three women you respect; spend real time together and support each other.'
+              },
+              {
+                id: 'community_involvement',
+                text: 'I am plugged into at least one healthy community (faith, hobby, service, etc.).',
+                weight: 2,
+                tip: 'Join or re-engage in one real-life community where you can both give and receive support.'
+              },
+              {
+                id: 'reputation_grace',
+                text: 'People who know me would describe me as gracious and trustworthy.',
+                weight: 3,
+                tip: 'Be careful with confidences: hold others’ stories gently and avoid sharing what isn’t yours to share.'
+              }
+            ]
+          },
+          {
+            id: 'romantic_demand_f',
+            title: '9. Reality Check: Romantic Demand & Self-Image',
+            description: 'How men respond to you, and how you see yourself.',
+            questions: [
+              {
+                id: 'demand_quality',
+                text: 'Men I respect and find attractive often show interest in me.',
+                weight: 3,
+                tip: 'Strengthen your fundamentals (appearance, warmth, joy) and spend time in environments that attract the kind of men you respect.'
+              },
+              {
+                id: 'standards_selectivity',
+                text: 'I have standards and can say no to attention that isn’t healthy.',
+                weight: 3,
+                tip: 'Define your non-negotiables and walk away early when they are violated, instead of hoping they will change.'
+              },
+              {
+                id: 'self_image_beloved',
+                text: 'I believe I am lovable, feminine, and worthy of a good man.',
+                weight: 3,
+                tip: 'Challenge self-hating thoughts; speak to yourself like you would to a younger sister you deeply care about.'
+              }
+            ]
+          }
+        ]
+      }
+    };
+
+    let currentGender = null;
+    let currentSections = null;
+
+    // ------------------------------------------
+    // Gender selection
+    // ------------------------------------------
+    function selectGender(gender) {
+      const config = questionnaires[gender];
+      if (!config) return;
+
+      currentGender = gender;
+      currentSections = config.sections;
+
+      document.getElementById('genderSelector').style.display = 'none';
+
+      const titleEl = document.getElementById('mainTitle');
+      const descEl = document.getElementById('mainDescription');
+      titleEl.textContent = config.title;
+      descEl.textContent = config.description;
+      titleEl.style.display = '';
+      descEl.style.display = '';
+
+      document.getElementById('questionnaire').style.display = '';
+      document.getElementById('results').style.display = '';
+
+      renderQuestionnaire();
+      handleReset();
+      attachInputListeners();
+    }
+
+    // ------------------------------------------
+    // Rendering
+    // ------------------------------------------
+    function renderQuestionnaire() {
+      const container = document.getElementById('questionnaire');
+      container.innerHTML = '';
+
+      if (!currentSections) return;
+
+      currentSections.forEach(section => {
+        const sectionEl = document.createElement('section');
+        sectionEl.className = 'section';
+        sectionEl.dataset.sectionId = section.id;
+
+        const header = document.createElement('div');
+        header.className = 'section-header-top';
+
+        const title = document.createElement('h2');
+        title.textContent = section.title;
+
+        const avg = document.createElement('div');
+        avg.className = 'section-average';
+        avg.textContent = 'Average: —';
+
+        header.appendChild(title);
+        header.appendChild(avg);
+
+        const desc = document.createElement('p');
+        desc.className = 'description';
+        desc.textContent = section.description || '';
+
+        sectionEl.appendChild(header);
+        sectionEl.appendChild(desc);
+
+        section.questions.forEach(q => {
+          const questionEl = document.createElement('div');
+          questionEl.className = 'question';
+          questionEl.dataset.questionId = q.id;
+
+          const label = document.createElement('label');
+          label.textContent = q.text + ' (' + '⭐'.repeat(q.weight ?? 1) + ')';
+
+          const scale = document.createElement('div');
+          scale.className = 'scale';
+
+          for (let i = 1; i <= 5; i++) {
+            const opt = document.createElement('label');
+            opt.className = 'scale-option';
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.name = `${section.id}__${q.id}`;
+            input.value = String(i);
+            opt.appendChild(input);
+            opt.appendChild(document.createTextNode(String(i)));
+            scale.appendChild(opt);
+          }
+
+          questionEl.appendChild(label);
+          questionEl.appendChild(scale);
+          sectionEl.appendChild(questionEl);
+        });
+
+        container.appendChild(sectionEl);
+      });
+    }
+
+    function attachInputListeners() {
+      const inputs = document.querySelectorAll('#questionnaire input[type="radio"]');
+      inputs.forEach(e => e.addEventListener('click', handleCalculate));
+    }
+
+    // ------------------------------------------
+    // Scoring
+    // ------------------------------------------
+    function collectScores() {
+      const missing = [];
+      const questionScores = [];
+      const sectionScores = {};
+
+      if (!currentSections) return { missing, questionScores, sectionScores };
+
+      currentSections.forEach(section => {
+        let sectionSum = 0;
+        let sectionCount = 0;
+
+        section.questions.forEach(q => {
+          const name = `${section.id}__${q.id}`;
+          const selected = document.querySelector(`input[name="${name}"]:checked`);
+          if (!selected) {
+            missing.push({ sectionId: section.id, questionId: q.id, questionText: q.text });
+            return;
+          }
+          const score = Number(selected.value);
+          const weight = q.weight ?? 1;
+          const weightedScore = score * weight;
+
+          sectionSum += score;
+          sectionCount += 1;
+
+          questionScores.push({
+            sectionId: section.id,
+            sectionTitle: section.title,
+            questionId: q.id,
+            questionText: q.text,
+            score,
+            weight,
+            weightedScore,
+            tip: q.tip || ''
+          });
+        });
+
+        if (sectionCount > 0) {
+          sectionScores[section.id] = {
+            average: sectionSum / sectionCount,
+            count: sectionCount
+          };
+        } else {
+          sectionScores[section.id] = {
+            average: null,
+            count: 0
+          };
+        }
+      });
+
+      return { missing, questionScores, sectionScores };
+    }
+
+    function updateSectionAverages(sectionScores) {
+      if (!currentSections) return;
+
+      currentSections.forEach(section => {
+        const sectionEl = document.querySelector(`.section[data-section-id="${section.id}"]`);
+        if (!sectionEl) return;
+        const avgEl = sectionEl.querySelector('.section-average');
+        const info = sectionScores[section.id];
+        if (!avgEl || !info) return;
+
+        if (info.average == null) {
+          avgEl.textContent = 'Average: —';
+        } else {
+          avgEl.textContent = `Average: ${info.average.toFixed(2)} / 5`;
+        }
+      });
+    }
+
+    function showResults({ missing, questionScores, sectionScores }) {
+      const resultsEl = document.getElementById('results');
+      resultsEl.innerHTML = '';
+
+      if (!currentSections || questionScores.length === 0 && missing.length === 0) {
+        const empty = document.createElement('p');
+        empty.textContent = 'Select a questionnaire and answer some questions to see your results.';
+        resultsEl.appendChild(empty);
+        return;
+      }
+
+      if (missing.length > 0) {
+        const warn = document.createElement('div');
+        warn.className = 'missing-warning';
+        warn.textContent = `You have ${missing.length} unanswered question(s). Fill them in for more accurate results.`;
+        resultsEl.appendChild(warn);
+      }
+
+      const header = document.createElement('h2');
+      header.textContent = 'Top 5 Areas to Improve (Weighted)';
+      resultsEl.appendChild(header);
+
+      const summary = document.createElement('div');
+      summary.className = 'results-summary';
+      summary.textContent = 'These are your lowest weighted scores (score × importance). Improving these will move the needle the fastest.';
+      resultsEl.appendChild(summary);
+
+      if (questionScores.length === 0) {
+        const empty = document.createElement('p');
+        empty.textContent = 'No answered questions yet.';
+        resultsEl.appendChild(empty);
+        return;
+      }
+
+      const sorted = [...questionScores].sort((a, b) => {
+        if (a.weightedScore === b.weightedScore) {
+          return a.score - b.score;
+        }
+        return a.weightedScore - b.weightedScore;
+      });
+      const top5 = sorted.slice(0, 5);
+
+      const list = document.createElement('ul');
+      list.className = 'area-list';
+
+      top5.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'area-item';
+
+        const sectionScore = sectionScores[item.sectionId]?.average ?? null;
+
+        const title = document.createElement('strong');
+        title.textContent = `${item.sectionTitle}`;
+
+        const question = document.createElement('div');
+        question.textContent = item.questionText;
+
+        const scoreLine = document.createElement('div');
+        scoreLine.className = 'section-score';
+        scoreLine.textContent = `Your score: ${item.score} / 5 (weight: ${item.weight}, weighted: ${item.weightedScore.toFixed(2)})`;
+
+        const badge = document.createElement('span');
+        badge.className = 'badge';
+        badge.textContent = sectionScore != null
+          ? `Section avg: ${sectionScore.toFixed(2)}`
+          : 'Section avg: —';
+
+        scoreLine.appendChild(badge);
+
+        const tipEl = document.createElement('div');
+        tipEl.className = 'coaching-tip';
+
+        const tipLabel = document.createElement('span');
+        tipLabel.className = 'coaching-tip-label';
+        tipLabel.textContent = 'Coaching tip:';
+
+        const tipText = document.createElement('span');
+        tipText.textContent = item.tip || 'Reflect on one concrete behaviour you can improve here this week.';
+
+        tipEl.appendChild(tipLabel);
+        tipEl.appendChild(tipText);
+
+        li.appendChild(title);
+        li.appendChild(question);
+        li.appendChild(scoreLine);
+        li.appendChild(tipEl);
+        list.appendChild(li);
+      });
+
+      resultsEl.appendChild(list);
+    }
+
+    // ------------------------------------------
+    // Event handlers
+    // ------------------------------------------
+    function handleCalculate() {
+      if (!currentSections) return;
+      const scores = collectScores();
+      updateSectionAverages(scores.sectionScores);
+      showResults(scores);
+    }
+
+    function handleReset() {
+      const inputs = document.querySelectorAll('#questionnaire input[type="radio"]');
+      inputs.forEach(i => { i.checked = false; });
+
+      const resultsEl = document.getElementById('results');
+      resultsEl.innerHTML = '';
+
+      const avgEls = document.querySelectorAll('.section-average');
+      avgEls.forEach(el => { el.textContent = 'Average: —'; });
+    }
+  </script>
+</body>
+</html>
